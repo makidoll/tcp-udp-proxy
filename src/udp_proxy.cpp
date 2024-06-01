@@ -218,7 +218,10 @@ namespace proxy_ns
 						UdpProxyRule proxy_rule = ept->proxy_rule;
 						proxy_rule.dst_endpoint = msg.src;
 						proxy_rule.src_port = 0;
-						sender.reset(new UdpEndpointProxy(ept->proxy_socket.get_io_service(), proxy_rule));
+						sender.reset(new UdpEndpointProxy(
+							(boost::asio::io_context&)ept->proxy_socket.get_executor().context(),
+							proxy_rule
+						));
 						if (sender->active_tm != 0)
 						{
 							new_epts[msg.src] = sender;

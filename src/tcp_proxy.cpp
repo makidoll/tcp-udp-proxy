@@ -36,7 +36,7 @@ namespace proxy_ns
 	bool TcpConnection::start()
 	{
 		socket_pair[1].reset(new boost::asio::ip::tcp::socket(proxy.getIoService()));
-		socket_pair[1]->async_connect(proxy.getPassiveDst(), boost::bind(&TcpConnection::handleConnect, this, _1));
+		socket_pair[1]->async_connect(proxy.getPassiveDst(), boost::bind(&TcpConnection::handleConnect, this, placeholders::_1));
 		return true;
 	}
 
@@ -129,7 +129,7 @@ namespace proxy_ns
 			}
 			boost::asio::async_write(*socket_pair[pair_id], 
 				boost::asio::buffer(buf.get(), buf.get_size()),
-				boost::bind(&TcpConnection::handleWrite, this, pair_id, _1));
+				boost::bind(&TcpConnection::handleWrite, this, pair_id, placeholders::_1));
 			if (proxy.getBandWidth() > 0)
 			{
 				available_bytes_pair[pair_id] -= buf.get_size() + TCP_PACKET_EXTRA_OVERHEAD;
@@ -163,7 +163,7 @@ namespace proxy_ns
 	{
 		recv_buf_pair[pair_id].reset(new BYTE[TCP_BUFFER_SIZE]);
 		socket_pair[pair_id]->async_read_some(boost::asio::buffer(recv_buf_pair[pair_id].get(), TCP_BUFFER_SIZE), 
-												boost::bind(&TcpConnection::handleRead, this, pair_id, _1, _2));
+												boost::bind(&TcpConnection::handleRead, this, pair_id, placeholders::_1, placeholders::_2));
 	}
 
 	void TcpConnection::handleRead(int pair_id, const boost::system::error_code& ec, std::size_t bytes_transferred)
@@ -293,7 +293,7 @@ namespace proxy_ns
 			close();
 			return;
 		}
-		routine_timer.async_wait(boost::bind(&TcpProxy::handleWait, this, _1));
+		routine_timer.async_wait(boost::bind(&TcpProxy::handleWait, this, placeholders::_1));
 	}
 
 	void TcpProxy::handleWait(const boost::system::error_code& error)
