@@ -5,7 +5,7 @@ Use with Docker Compose like this:
 ```yml
 services:
     tcp-udp-proxy:
-        image: ghcr.io/makidoll/tc-udp-proxy:latest
+        image: ghcr.io/makidoll/tcp-udp-proxy:latest
         restart: always
         environment:
             PROXY_CONF: |
